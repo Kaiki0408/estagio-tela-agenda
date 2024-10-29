@@ -1,0 +1,112 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  display: grid;
+  place-items: center;
+  height: 100vh;
+  padding: 2rem;
+  font-family: Poppins, sans-serif;
+}
+h3 {
+  font-weight: 700;
+}
+.calendar {
+  width: 80%;
+  height: min-content;
+  min-height: 80dvh;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+.calendar header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.calendar nav {
+  display: flex;
+  align-items: center;
+}
+.calendar ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+}
+.calendar ul li {
+  width: calc(100% / 7);
+  height: 100px;
+  padding: 0.5rem;
+  position: relative;
+  z-index: 2;
+  border: 1px solid #eee;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+#prev,
+#next {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+#prev::before,
+#next::before {
+  content: "";
+  width: 50%;
+  height: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-style: solid;
+  border-width: 0.25rem 0.25rem 0 0;
+  border-color: #ccc;
+}
+#next::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+#prev::before {
+  transform: translate(-50%, -50%) rotate(-135deg);
+}
+#prev:hover::before,
+#next:hover::before {
+  border-color: #000;
+}
+section .days {
+  border-radius: 4px;
+  overflow: hidden;
+}
+section .days li {
+  font-weight: 700;
+  height: 40px;
+  align-items: center;
+  color: #fff;
+  background-color: #31526b;
+}
+.dates li.today {
+  color: #fff;
+}
+.dates li.today::before {
+  content: "";
+  width: 2rem;
+  height: 2rem;
+  position: absolute;
+  top: 4.5%;
+  left: 0.5%;
+  background: #31526b;
+  border-radius: 50%;
+  z-index: -1;
+}
+.dates li.inactive {
+  color: #ccc;
+}
