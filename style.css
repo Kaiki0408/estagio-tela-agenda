@@ -42,7 +42,6 @@ h3 {
 }
 .calendar ul li {
   width: calc(100% / 7);
-  height: 100px;
   padding: 0.5rem;
   position: relative;
   z-index: 2;
@@ -50,6 +49,20 @@ h3 {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
+}
+#toggleView {
+  margin-right: 1rem;
+  color: #000;
+  background-color: transparent;
+  border-color: #31526b;
+  border-width: 1px;
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+}
+#toggleView:hover {
+  background-color: #31526b;
+  color: #fff;
 }
 #prev,
 #next {
@@ -82,6 +95,11 @@ h3 {
 #next:hover::before {
   border-color: #000;
 }
+
+.calendar-view {
+  display: flex;
+}
+
 section .days {
   border-radius: 4px;
   overflow: hidden;
@@ -92,6 +110,9 @@ section .days li {
   align-items: center;
   color: #fff;
   background-color: #31526b;
+}
+.dates li {
+  height: 100px;
 }
 .dates li.today {
   color: #fff;
@@ -109,4 +130,26 @@ section .days li {
 }
 .dates li.inactive {
   color: #ccc;
+}
+.calendar .hours {
+  list-style: none;
+  padding: 0;
+  margin: 90px 0;
+  width: 50px;
+  text-align: right;
+}
+
+.calendar .hours li {
+  width: 100%;
+  font-size: 0.75rem;
+}
+
+.days-container {
+  flex: 1;
+}
+
+.days,
+.dates {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
 }
