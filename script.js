@@ -1,6 +1,7 @@
 const header = document.querySelector(".calendar h3");
 const dates = document.querySelector(".dates");
 const hours = document.querySelector(".hours");
+const listHours = document.querySelector(".list-hours");
 const navs = document.querySelectorAll("#prev, #next");
 const toggleViewBtn = document.getElementById("toggleView");
 
@@ -24,6 +25,8 @@ let isMonthlyView = true;
 let currentDate = new Date();
 let month = currentDate.getMonth();
 let year = currentDate.getFullYear();
+let hour = currentDate.getHours();
+let minutes = currentDate.getMinutes();
 
 function getWeekRange(date) {
   const startOfWeek = new Date(date);
@@ -42,9 +45,89 @@ function adjustDateItemsHeight() {
 
 function renderHours() {
   hours.innerHTML = "";
-  for (let i = 0; i < 24; i++) {
-    const hourText = i.toString().padStart(2, "0") + ":00";
+  for (let i = 0; i < 25; i++) {
+    const hourText = i.toString().padStart(2, "");
     hours.innerHTML += `<li>${hourText}</li>`;
+  }
+}
+
+function renderEmptyHourContainers() {
+  const listHours = document.querySelector(".list-hours");
+  if (!listHours) return;
+
+  for (let i = 0; i < 24; i++) {
+    const hourRow = document.createElement("div");
+    hourRow.classList.add("hour-row");
+
+    for (let j = 0; j < 7; j++) {
+      const dayContainer = document.createElement("div");
+      dayContainer.classList.add("day-container");
+      dayContainer.dataset.hour = i;
+      dayContainer.dataset.day = j;
+      hourRow.appendChild(dayContainer);
+    }
+
+    listHours.appendChild(hourRow);
+  }
+}
+
+// function highlightCurrentHourAndDayDiv() {
+//   const now = new Date();
+//   const currentHour = now.getHours();
+//   const currentDay = now.getDay();
+
+//   const currentBlock = document.querySelector(
+//     `.day-container[data-hour="${currentHour}"][data-day="${currentDay}"]`
+//   );
+
+//   if (currentBlock) {
+//     currentBlock.classList.add("highlight-current");
+//   }
+// }
+
+function highlightCurrentHour() {
+  const now = new Date();
+  const currentHour = now.getHours();
+
+  const hourItems = document.querySelectorAll(".hours li");
+
+  hourItems.forEach((li) => li.classList.remove("current-hour"));
+
+  if (hourItems[currentHour]) {
+    hourItems[currentHour].classList.add("current-hour");
+  }
+}
+
+function renderMinuteLines() {
+  const dayContainers = document.querySelectorAll(".day-container");
+
+  dayContainers.forEach((container) => {
+    for (let i = 0; i < 60; i++) {
+      const minuteLine = document.createElement("div");
+      minuteLine.classList.add("minute-line");
+      minuteLine.dataset.minute = i; // Atribui o minuto ao dataset
+      container.appendChild(minuteLine);
+    }
+  });
+}
+
+function highlightCurrentMinute() {
+  const now = new Date();
+  const currentHour = now.getHours();
+  const currentDay = now.getDay();
+  const currentMinute = now.getMinutes();
+
+  const currentDayContainer = document.querySelector(
+    `.day-container[data-hour="${currentHour}"][data-day="${currentDay}"]`
+  );
+
+  if (currentDayContainer) {
+    const currentMinuteLine = currentDayContainer.querySelector(
+      `.minute-line[data-minute="${currentMinute}"]`
+    );
+    if (currentMinuteLine) {
+      currentMinuteLine.classList.add("highlight-minute");
+    }
   }
 }
 
@@ -53,14 +136,20 @@ function renderCalendar() {
   hours.innerHTML = "";
   if (isMonthlyView) {
     hours.style.display = "none";
+    listHours.style.display = "none";
     renderMonthlyView();
   } else {
-    hours.style.display = "block";
+    hours.style.display = "flex";
+    listHours.style.display = "flex";
     renderHours();
     renderWeeklyView();
+    renderEmptyHourContainers();
+    // highlightCurrentHourAndDayDiv();
+    highlightCurrentHour();
+    renderMinuteLines();
+    highlightCurrentMinute();
   }
-  adjustDateItemsHeight(); // Chamada para ajustar a altura dos itens .dates li
-
+  adjustDateItemsHeight();
 }
 
 function renderMonthlyView() {
@@ -97,6 +186,7 @@ function renderWeeklyView() {
   header.textContent = `${startOfWeek.toLocaleDateString()} - ${endOfWeek.toLocaleDateString()}`;
 
   let datesHtml = "";
+
   for (let i = 0; i < 7; i++) {
     const day = new Date(startOfWeek);
     day.setDate(startOfWeek.getDate() + i);

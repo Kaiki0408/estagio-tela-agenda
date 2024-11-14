@@ -1,5 +1,7 @@
 const header = document.querySelector(".calendar h3");
 const dates = document.querySelector(".dates");
+const hours = document.querySelector(".hours");
+const listHours = document.querySelector(".list-hours");
 const navs = document.querySelectorAll("#prev, #next");
 const toggleViewBtn = document.getElementById("toggleView");
 
@@ -19,34 +21,84 @@ const months = [
 ];
 const daysOfWeek = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"];
 
-let isMonthlyView = true; // Variável para controlar a visualização
+let isMonthlyView = true;
 let currentDate = new Date();
 let month = currentDate.getMonth();
 let year = currentDate.getFullYear();
+let hour = currentDate.getHours();
+let minutes = currentDate.getMinutes();
 
 function getWeekRange(date) {
   const startOfWeek = new Date(date);
-  startOfWeek.setDate(date.getDate() - date.getDay()); // Define para o início da semana (domingo)
+  startOfWeek.setDate(date.getDate() - date.getDay());
   const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6); // Define para o fim da semana (sábado)
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
   return { startOfWeek, endOfWeek };
 }
 
-function adjustDatesHeight() {
+function adjustDateItemsHeight() {
   const dateItems = document.querySelectorAll(".dates li");
   dateItems.forEach((li) => {
-    li.style.height = isMonthlyView ? "" : "20px"; // Ajuste o valor "50px" para a altura desejada na visão semanal
+    li.style.height = isMonthlyView ? "100px" : "50px"; // Ajuste os valores conforme necessário
   });
 }
 
-function renderCalendar() {
-  dates.innerHTML = ""; // Limpa a exibição anterior
+function renderHours() {
+  hours.innerHTML = "";
+  for (let i = 0; i < 25; i++) {
+    const hourText = i.toString().padStart(2, "");
+    hours.innerHTML += `<li>${hourText}</li>`;
+  }
+}
 
+function renderEmptyHourContainers() {
+  const listHours = document.querySelector(".list-hours");
+
+  if (!listHours) return;
+
+  for (let i = 0; i < 24; i++) {
+    const hourRow = document.createElement("div");
+    hourRow.classList.add("hour-row");
+
+    for (let j = 0; j < 7; j++) {
+      const dayContainer = document.createElement("div");
+      dayContainer.classList.add("day-container");
+      hourRow.appendChild(dayContainer);
+    }
+
+    listHours.appendChild(hourRow);
+  }
+}
+renderEmptyHourContainers();
+
+function highlightCurrentHour() {
+  const now = new Date();
+  const currentHour = now.getHours();
+
+  const hourItems = document.querySelectorAll(".hours li");
+
+  hourItems.forEach((li) => li.classList.remove("current-hour"));
+
+  if (hourItems[currentHour]) {
+    hourItems[currentHour].classList.add("current-hour");
+  }
+}
+
+function renderCalendar() {
+  dates.innerHTML = "";
+  hours.innerHTML = "";
   if (isMonthlyView) {
+    hours.style.display = "none";
+    listHours.style.display = "none";
     renderMonthlyView();
   } else {
+    hours.style.display = "block";
+    listHours.style.display = "flex";
+    renderHours();
     renderWeeklyView();
+    highlightCurrentHour();
   }
+  adjustDateItemsHeight();
 }
 
 function renderMonthlyView() {
@@ -83,13 +135,13 @@ function renderWeeklyView() {
   header.textContent = `${startOfWeek.toLocaleDateString()} - ${endOfWeek.toLocaleDateString()}`;
 
   let datesHtml = "";
+
   for (let i = 0; i < 7; i++) {
     const day = new Date(startOfWeek);
     day.setDate(startOfWeek.getDate() + i);
 
     const isToday = day.toDateString() === new Date().toDateString();
-    datesHtml += `<li${isToday ? ' class="today"' : ""}>
-    ${day.getDate()}</li>`;
+    datesHtml += `<li${isToday ? ' class="today"' : ""}>${day.getDate()}</li>`;
   }
 
   dates.innerHTML = datesHtml;
